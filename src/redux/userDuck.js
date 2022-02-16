@@ -35,7 +35,7 @@ export const doGoogleLoginAction = () => (dispatch, getState) => {
       type: LOGIN_SUCCESS,
       payload: {
         uid: user.uid,
-        displayName: user.display,
+        displayName: user.displayName,
         email: user.email,
         photoURL: user.photoURL
       }
