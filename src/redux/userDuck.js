@@ -33,7 +33,12 @@ export const doGoogleLoginAction = () => (dispatch, getState) => {
   return loginWithGoogle().then(user => {
     dispatch({
       type: LOGIN_SUCCESS,
-      payload: { ...user }
+      payload: {
+        uid: user.uid,
+        displayName: user.display,
+        email: user.email,
+        photoURL: user.photoURL
+      }
     })
     saveStorage(getState())
   }).catch(err => {

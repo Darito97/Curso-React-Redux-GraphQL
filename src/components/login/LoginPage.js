@@ -3,11 +3,12 @@ import styles from './login.module.css'
 import { connect } from 'react-redux'
 import { doGoogleLoginAction } from '../../redux/userDuck'
 
-function LoginPage({ doGoogleLoginAction }) {
+function LoginPage({ fetching, doGoogleLoginAction }) {
 
   function doLogin() {
     doGoogleLoginAction()
   }
+  if (fetching) return <h2>Cargando...</h2>
   return (
     <div className={styles.container}>
       <h1>
@@ -26,8 +27,8 @@ function LoginPage({ doGoogleLoginAction }) {
   )
 }
 
-function mapStateToProps(state) {
-  return {}
+function mapStateToProps({ user: { fetching } }) {
+  return fetching
 }
 
 
