@@ -33,10 +33,10 @@ export const getCharactersAction = () => (dispach, getState) => {
       payload: res.data.results
     })
   }).catch((error) => {
-    console.log(error)
+    console.log(error.message)
     dispach({
       type: GET_CHARACTERS_ERROR,
-      payload: error.response.message
+      payload: error.message
     })
   })
 }
