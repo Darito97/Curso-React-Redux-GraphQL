@@ -5,7 +5,7 @@ let initialData = {
   characters: [],
   current: {}
 }
-const URL = "https://rickandmortyapi.com/api"
+const URL = "https://rickandmortyapi.com/api/character"
 
 let GET_CHARACTERS = "GET_CHARACTERS"
 let GET_CHARACTERS_SUCESS = "GET_CHARACTERS_SUCESS"
@@ -22,6 +22,7 @@ export default function reducer(state = initialData, action) {
 }
 // actions
 export const getCharactersAction = () => (dispach, getState) => {
+
   return axios.get(URL).then(res => {
     dispach({
       type: GET_CHARACTERS_SUCESS,
