@@ -22,7 +22,7 @@ export default function reducer(state = initialData, action) {
     case ADD_TO_FAVORITES:
       return { ...state, ...action.payload }
     case REMOVE_CHARACTER:
-      return { state, array: action.payload }
+      return { ...state, array: action.payload }
     case GET_CHARACTERS:
       return { ...state, fetching: true }
     case GET_CHARACTERS_ERROR:
