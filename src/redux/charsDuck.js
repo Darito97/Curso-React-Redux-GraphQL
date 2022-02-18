@@ -1,5 +1,5 @@
 import axios from 'axios'
-import { updateDB } from '../firebase'
+import { updateDB, getFavs } from '../firebase'
 // constantes
 let initialData = {
   fetching: false,
@@ -16,9 +16,19 @@ let GET_CHARACTERS_ERROR = "GET_CHARACTERS_ERROR"
 let REMOVE_CHARACTER = "REMOVE_CHARACTER"
 let ADD_TO_FAVORITES = "ADD_TO_FAVORITES"
 
+let GET_FAVORITES = "GET_FAVORITES"
+let GET_FAVORITES_SUCCESS = "GET_FAVORITES_SUCCESS"
+let GET_FAVORITES_ERROR = "GET_FAVORITES_ERROR"
+
 // reducer
 export default function reducer(state = initialData, action) {
   switch (action.type) {
+    case GET_FAVORITES:
+      return { ...state, fetching: true }
+    case GET_FAVORITES_ERROR:
+      return { ...state, fetching: false, error: action.payload }
+    case GET_FAVORITES_SUCCESS:
+      return { ...state, fetching: false, favorites: action.payload }
     case ADD_TO_FAVORITES:
       return { ...state, ...action.payload }
     case REMOVE_CHARACTER:
@@ -72,4 +82,26 @@ export const addToFavoritesAction = () => (dispach, getState) => {
       favorites: [...favorites]
     }
   })
+}
+
+export const retreiveFavs = () => (dispach, getState) => {
+  dispach({
+    type: GET_FAVORITES
+  })
+  let { uid } = getState().user
+  return getFavs(uid).then(favs => {
+    console.log(favs)
+    dispach({
+      type: GET_FAVORITES_SUCCESS,
+      payload: [...favs]
+    })
+  }
+  ).catch(err => {
+    console.log(err)
+    dispach({
+      type: GET_FAVORITES_ERROR,
+      payload: err.message
+    })
+  })
+
 }

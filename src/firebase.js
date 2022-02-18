@@ -1,6 +1,6 @@
 import { initializeApp } from "firebase/app";
 import { getAuth, signInWithPopup, GoogleAuthProvider, signOut } from 'firebase/auth'
-import { getFirestore, setDoc, doc } from 'firebase/firestore'
+import { getFirestore, setDoc, doc, getDoc } from 'firebase/firestore'
 const firebaseConfig = {
   apiKey: "AIzaSyACDApqKn5o4I0x5o_Uv072HacVnUeazxM",
   authDomain: "fir-login-test-43fbf.firebaseapp.com",
@@ -17,6 +17,11 @@ const db = getFirestore(app)
 export function updateDB(array, uid) {
   return setDoc(doc(db, 'favorites', uid), {
     favorites: [...array]
+  })
+}
+export function getFavs(uid) {
+  return getDoc(doc(db, 'favorites', uid)).then(snap => {
+    return snap.data().favorites
   })
 }
 
