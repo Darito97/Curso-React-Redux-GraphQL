@@ -1,4 +1,5 @@
 import axios from 'axios'
+import { updateDB } from '../firebase'
 // constantes
 let initialData = {
   fetching: false,
@@ -60,8 +61,10 @@ export const removeCharacterAction = () => (dispach, getState) => {
 
 export const addToFavoritesAction = () => (dispach, getState) => {
   let { array, favorites } = getState().characters
+  let { uid } = getState().user
   let char = array.shift()
   favorites.push(char)
+  updateDB(favorites, uid)
   dispach({
     type: ADD_TO_FAVORITES,
     payload: {

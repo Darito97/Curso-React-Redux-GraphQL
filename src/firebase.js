@@ -1,5 +1,6 @@
 import { initializeApp } from "firebase/app";
 import { getAuth, signInWithPopup, GoogleAuthProvider, signOut } from 'firebase/auth'
+import { getFirestore, setDoc, doc } from 'firebase/firestore'
 const firebaseConfig = {
   apiKey: "AIzaSyACDApqKn5o4I0x5o_Uv072HacVnUeazxM",
   authDomain: "fir-login-test-43fbf.firebaseapp.com",
@@ -10,7 +11,15 @@ const firebaseConfig = {
 };
 
 // Initialize Firebase
-initializeApp(firebaseConfig);
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app)
+
+export function updateDB(array, uid) {
+  return setDoc(doc(db, 'favorites', uid), {
+    favorites: [...array]
+  })
+}
+
 export function loginWithGoogle() {
   const auth = getAuth()
   let provider = new GoogleAuthProvider()
