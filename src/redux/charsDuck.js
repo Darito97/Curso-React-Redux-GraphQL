@@ -1,5 +1,6 @@
 import axios from 'axios'
 import { updateDB, getFavs } from '../firebase'
+import { saveStorage } from './userDuck'
 // constantes
 let initialData = {
   fetching: false,
@@ -95,6 +96,7 @@ export const retreiveFavs = () => (dispach, getState) => {
       type: GET_FAVORITES_SUCCESS,
       payload: [...favs]
     })
+    saveStorage(getState())
   }
   ).catch(err => {
     console.log(err)
@@ -104,4 +106,15 @@ export const retreiveFavs = () => (dispach, getState) => {
     })
   })
 
+}
+
+export const restoreFavsAction = () => (dispach) => {
+  let storage = localStorage.getItem('storage')
+  storage = JSON.parse(storage)
+  if (storage && storage.characters) {
+    dispach({
+      type: GET_FAVORITES_SUCCESS,
+      payload: storage.characters.favorites
+    })
+  }
 }

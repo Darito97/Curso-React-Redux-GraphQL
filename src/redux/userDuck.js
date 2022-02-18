@@ -26,7 +26,7 @@ export default function reducer(state = initialData, action) {
   }
 }
 //aux
-function saveStorage(storage) {
+export function saveStorage(storage) {
   localStorage.storage = JSON.stringify(storage)
 }
 
