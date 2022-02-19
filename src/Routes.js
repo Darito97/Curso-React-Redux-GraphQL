@@ -2,6 +2,7 @@ import React from 'react'
 import { Switch, Route, Redirect } from 'react-router-dom'
 import { connect } from 'react-redux'
 import Home from './components/home/HomePage'
+import GraphHome from './components/home/GraphHome'
 import FavPage from './components/favs/FavPage'
 import LoginPage from './components/login/LoginPage'
 
@@ -19,7 +20,7 @@ function PrivateRoute({ loggedIn, path, component, ...rest }) {
 function Routes({ loggedIn }) {
   return (
     <Switch>
-      <PrivateRoute loggedIn={loggedIn} exact path="/" component={Home} />
+      <PrivateRoute loggedIn={loggedIn} exact path="/" component={GraphHome} />
       <PrivateRoute loggedIn={loggedIn} path="/favs" component={FavPage} />
       <Route path="/login" component={LoginPage} />
     </Switch>
