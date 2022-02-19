@@ -1,14 +1,22 @@
 import axios from 'axios'
 import { updateDB, getFavs } from '../firebase'
 import { saveStorage } from './userDuck'
+import ApolloClient, { gql } from 'apollo-boost'
 // constantes
 let initialData = {
   fetching: false,
   characters: [],
   current: {},
-  favorites: []
+  favorites: [],
+  nextPage: 1
 }
 const URL = "https://rickandmortyapi.com/api/character"
+
+const client = new ApolloClient({
+  uri: "https://rickandmortyapi.com/graphql"
+})
+
+let UPDATE_PAGE = 'UPDATE_PAGE'
 
 let GET_CHARACTERS = "GET_CHARACTERS"
 let GET_CHARACTERS_SUCESS = "GET_CHARACTERS_SUCESS"
@@ -24,6 +32,8 @@ let GET_FAVORITES_ERROR = "GET_FAVORITES_ERROR"
 // reducer
 export default function reducer(state = initialData, action) {
   switch (action.type) {
+    case UPDATE_PAGE:
+      return { ...state, nextPage: action.payload }
     case GET_FAVORITES:
       return { ...state, fetching: true }
     case GET_FAVORITES_ERROR:
@@ -45,10 +55,46 @@ export default function reducer(state = initialData, action) {
 }
 // actions
 export const getCharactersAction = () => (dispach, getState) => {
+  let query = gql`
+    query ($page:Int){
+      characters(page:$page){
+        info{
+          pages
+          next
+          prev
+        }
+        results{
+          name
+          image
+        }
+      }
+    }
+  `
   dispach({
     type: GET_CHARACTERS,
   })
-  return axios.get(URL).then(res => {
+  let { nextPage } = getState().characters
+  return client.query({
+    query,
+    variables: { page: nextPage }
+  }).then(({ data, error }) => {
+    if (error) {
+      dispach({
+        type: GET_CHARACTERS_ERROR,
+        payload: error
+      })
+      return
+    }
+    dispach({
+      type: GET_CHARACTERS_SUCESS,
+      payload: data.characters.results
+    })
+    dispach({
+      type: UPDATE_PAGE,
+      payload: data.characters.info.next ? data.characters.info.next : 1
+    })
+  })
+  /*return axios.get(URL).then(res => {
     dispach({
       type: GET_CHARACTERS_SUCESS,
       payload: res.data.results
@@ -58,12 +104,16 @@ export const getCharactersAction = () => (dispach, getState) => {
       type: GET_CHARACTERS_ERROR,
       payload: error.message
     })
-  })
+  }) */
 }
 
 export const removeCharacterAction = () => (dispach, getState) => {
   let array = getState().characters.array
   array.shift()
+  if (array.length === 0) {
+    getCharactersAction()(dispach, getState)
+    return
+  }
   dispach({
     type: REMOVE_CHARACTER,
     payload: [...array]

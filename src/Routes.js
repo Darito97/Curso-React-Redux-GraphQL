@@ -20,7 +20,7 @@ function PrivateRoute({ loggedIn, path, component, ...rest }) {
 function Routes({ loggedIn }) {
   return (
     <Switch>
-      <PrivateRoute loggedIn={loggedIn} exact path="/" component={GraphHome} />
+      <PrivateRoute loggedIn={loggedIn} exact path="/" component={Home} />
       <PrivateRoute loggedIn={loggedIn} path="/favs" component={FavPage} />
       <Route path="/login" component={LoginPage} />
     </Switch>
